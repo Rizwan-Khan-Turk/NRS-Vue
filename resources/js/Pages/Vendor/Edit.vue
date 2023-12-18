@@ -30,313 +30,194 @@ const { pet } = usePage().props
 
 // Get the pet data from the prop
 const props = defineProps({
-	pet: {
+	vendor: {
 		type: Object,
 		required: true
 	}
 })
+console.log("Props are:" + props.vendor);
 
 // Initialize the form with the pet data
 const editForm = reactive({
-	name: props.pet.name,
-	species_id: props.pet.species_id,
-	breed_id: props.pet.breed_id,
-	age: props.pet.age,
-	gender: props.pet.gender,
-	photo: {
-		file: null,
-		url: props.pet.photo
-	},
-	client_id: props.pet.client_id
+	vname: props.vendor.vname,
+	vcode: props.vendor.vcode,
+	po_ip: props.vendor.po_ip,
+	po_port: props.vendor.po_port,
+	po_directory: props.vendor.po_directory,
+	ftp_username: props.vendor.ftp_username,
+	ftp_password: props.vendor.ftp_password,
+	invoice_ip: props.vendor.invoice_ip,
+	invoice_port: props.vendor.invoice_port,
+	invoice_directory: props.vendor.invoice_directory,
+	ftp_username_invoice: props.vendor.ftp_username_invoice,
+	ftp_password_invoice: props.vendor.ftp_password_invoice,
+	file_pattern: props.vendor.file_pattern
+	
 })
 
-// Set the initial values for the multiselect components
-selectedUser.value = props.pet.client 
-  ? { id: props.pet.client_id, name: props.pet.client.name } 
-  : null;
-
-selectedSpecies.value = props.pet.species 
-  ? { id: props.pet.species_id, name: props.pet.species.name } 
-  : null;
-
-selectedBreed.value = props.pet.breed 
-  ? { id: props.pet.breed_id, name: props.pet.breed.name } 
-  : null;
-
-// Set the initial value for the file input
-
-
-const handleFileChange = (event) => {
-	selectedFile.value = event.target.files[0];
-
-	if (selectedFile.value) {
-		editForm.photo = {
-			file: selectedFile.value,
-			url: URL.createObjectURL(selectedFile.value)
-		};
-	}
-}
-
-const handleFileDrop = (event) => {
-	selectedFile.value = event.dataTransfer.files[0];
-
-	// Update the createForm’s photo property with the URL for display purposes
-	if (selectedFile.value) {
-		newImage.value = URL.createObjectURL(selectedFile.value);
-	}
-}
-
-const fetchAllClients = async () => {
-  const response = await axios.get('/pets/fetchAllClients');
-  matchingUsers.value = response.data.slice(0, 10);
-}
-
-const fetchUsers = async (query) => {
-  const response = await axios.get(`/pets/users`, { params: { name: query } });
-  matchingUsers.value = response.data.slice(0, 10);
-}
-
-const editPet = async () => {
+const editVendor = async () => {
   isSubmitting.value = true;
 
-  validateForm(editForm);
-
-	// If there are any errors, don't submit the form
-	if (Object.keys(errors.value).length > 0) {
-		toast.error("Please correct the errors in the form.");
-		isSubmitting.value = false;
-		return;
-	}
-
+  
   const formData = new FormData();
+  Object.keys(editForm).forEach((key) => {
+  	formData.append(key, editForm[key]);
+	});
 
-  let submitData = { ...editForm, ...editForm.value };
-	submitData.species_id = selectedSpecies.value ? selectedSpecies.value.id : null;
-  submitData.breed_id = selectedBreed.value ? selectedBreed.value.id : null;
-  submitData.client_id = selectedUser.value ? selectedUser.value.id : null;
+	// for (let pair of formData.entries()) {
+  	// 	console.log(pair[0] + ', ' + pair[1]);
+	// }
 
-  // Append each property of submitData to formData
-  for (let property in submitData) {
-    if (submitData[property] !== null && submitData[property] !== '') {
-      if (property === 'photo' && submitData.photo && submitData.photo.file instanceof File) {
-        // Include the photo field only if a new photo file has been selected
-        formData.append(property, submitData.photo.file);
-      } else if (property !== 'photo') {
-        // Append other properties to formData
-        formData.append(property, submitData[property]);
-      }
-    }
-  }
+  
+  const response = await axios.post(`/vendor/${props.vendor.id}`, formData)
 
-  const response = await axios.post(`/pets/${pet.id}`, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  })
-
-  toast.success(response.data.message)
+   toast.success(response.data.message)
 
   isSubmitting.value = false;
 }
-
-const fetchSpecies = async (query) => {
-  const response = await axios.get(`/pets/species`, { params: { name: query } });
-  
-  // Limit the initially fetched species to 10
-  matchingSpecies.value = response.data.slice(0, 10);
-  await nextTick();
-}
-
-const fetchAllSpecies = async () => {
-  const response = await axios.get('/pets/fetchAllSpecies');
-  matchingSpecies.value = response.data;
-  await nextTick();
-}
-
-const setUserId = () => {
-	if (selectedUser.value) {
-		editForm.client_id = selectedUser.value.id;
-	} else {
-		editForm.client_id = ''
-	}
-}
-
-const setSpeciesId = () => {
-	if (selectedSpecies.value) {
-		editForm.species_id = selectedSpecies.value.id;
-	}
-}
-
-const fetchBreeds = async (speciesId) => {
-  loadingBreeds.value = true;
-  
-  const response = await axios.get(`/pets/fetchAllBreeds`, {
-    params: { species_id: speciesId }
-  });
-  
-  matchingBreeds.value = response.data;
-  await nextTick();
-
-  loadingBreeds.value = false;
-}
-
-const fetchAllBreeds = async () => {
-  loadingBreeds.value = true;
-  
-  const response = await axios.get(`/pets/fetchAllBreeds`, {
-    params: { species_id: selectedSpecies.value.id }
-  });
-  
-  matchingBreeds.value = response.data;
-  await nextTick();
-
-  loadingBreeds.value = false;
-}
-
-watch(selectedUser, () => {
-  if (selectedUser.value) {
-    setUserId();
-  } else {
-    editForm.client_id = '';
-  }
-})
-watch(selectedSpecies, () => {
-	if (selectedSpecies.value) {
-		setSpeciesId();
-		fetchBreeds(selectedSpecies.value.id);
-	} else {
-    editForm.species_id = '';
-  }
-})
-watch(selectedBreed, () => {
-	if (selectedBreed.value) {
-		editForm.breed_id = selectedBreed.value.id;
-	}
-})
-
-onMounted(async () => {
-	errors.value = {}
-	await fetchAllClients()
-	await fetchAllSpecies()
-	await fetchAllBreeds()
-	watchFields(editForm);
-})
-
 </script>
 
 <template>
-	<AppLayout title="Edit Pet">
+	<AppLayout title="Edit Vendor">
 		<template #header>
 			<h2 class="text-lg font-semibold leading-6 text-gray-900">
-				Edit Pet: {{ pet.name }}
+				Edit Vendor: {{ vendor.vname }}
 			</h2>
 		</template>
 
 		<div class="max-w-full bg-white p-5 rounded-md">
-			<form @submit.prevent="editPet" enctype="multipart/form-data" class="space-y-5">
+			<form @submit.prevent="editVendor" enctype="multipart/form-data" class="space-y-5">
 				<div class="grid grid-cols-12 gap-5">
 					<div class="col-span-6">
-						<label for="name" class="mb-2 block text-sm font-medium text-gray-500">Name</label>
-						<input v-model="editForm.name" type="text" id="name"
+						<label for="vname" class="mb-2 block text-sm font-medium text-gray-500">Name</label>
+						<input v-model="editForm.vname" type="text" id="vname"
 							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 placeholder:text-sm"
-							:class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.name }"
+							:class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.vname }"
 							placeholder="Pet Name" />
-						<div v-if="errors.name" class="text-sm text-red-500 mt-1">
-							{{ errors.name }}
+						<div v-if="errors.vname" class="text-sm text-red-500 mt-1">
+							{{ errors.vname }}
 						</div>
 					</div>
 					<div class="col-span-6">
-						<label for="client_id" class="mb-2 block text-sm font-medium text-gray-500">Client</label>
-						<VueMultiselect v-model="selectedUser"
-							:class="{ 'error': errors.client_id }"
-							:options="matchingUsers" :multiple="false" :clear-on-select="true" placeholder="Type to search" label="name"
-							track-by="id" @search-change="fetchUsers" @input="setUserId">
-							<template #noResult>
-								Oops! No users found. Try a different search query.
-							</template>
-						</VueMultiselect>
-						<div v-if="errors.client_id" class="text-sm text-red-500 mt-1">
-							{{ errors.client_id }}
+						<label for="vcode" class="mb-2 block text-sm font-medium text-gray-700">Vendor Code</label>
+						<input v-model="editForm.vcode" type="text" id="vcode"
+							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 placeholder:text-sm"
+							:class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.vcode }" placeholder="Vendor Code" />
+						<div v-if="errors.vcode" class="text-sm text-red-500 mt-1">
+							{{ errors.vcode }}
 						</div>
 					</div>
-
-					<div class="col-span-12 sm:col-span-6">
-						<label for="species" class="mb-2 block text-sm font-medium text-gray-500">Species</label>
-						<VueMultiselect v-model="selectedSpecies"
-							:class="{ 'error': errors.species_id }"
-							:options="matchingSpecies" :multiple="false" :clear-on-select="true" placeholder="Type to search"
-							label="name" track-by="id" @search-change="fetchSpecies" @input="setSpeciesId">
-							<template #noResult>
-								Oops! No species found. Try a different search query.
-							</template>
-						</VueMultiselect>
-						<div v-if="errors.species_id" class="text-sm text-red-500 mt-1">
-							{{ errors.species_id }}
+					<!--Purchase Order Fields-->
+					<div class="col-span-6">
+						<label for="po_ip" class="mb-2 block text-sm font-medium text-gray-700">PO FTP Server IP</label>
+						<input v-model="editForm.po_ip" type="text" id="po_ip"
+							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 placeholder:text-sm"
+							:class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.po_ip }" placeholder="PO FTP Server IP" />
+						<div v-if="errors.po_ip" class="text-sm text-red-500 mt-1">
+							{{ errors.po_ip }}
 						</div>
 					</div>
-					<div class="col-span-12 sm:col-span-6">
-						<label for="breed" class="mb-2 block text-sm font-medium text-gray-500">Breed</label>
-						<VueMultiselect v-model="selectedBreed" :options="matchingBreeds" :multiple="false" :clear-on-select="true"
-							placeholder="Type to search" label="name" track-by="id">
-							<template #noResult1>
-								Oops! No breeds found. Try a different search query.
-							</template>
-						</VueMultiselect>
+					<div class="col-span-6">
+						<label for="po_port" class="mb-2 block text-sm font-medium text-gray-700">PO FTP Server Port</label>
+						<input v-model="editForm.po_port" type="text" id="po_port"
+							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 placeholder:text-sm"
+							:class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.po_port }" placeholder="PO FTP Server Port" />
+						<div v-if="errors.po_port" class="text-sm text-red-500 mt-1">
+							{{ errors.po_port }}
+						</div>
 					</div>
-
-					<div class="col-span-8 sm:col-span-10">
-						<label for="gender" class="mb-2 block text-sm font-medium text-gray-500">Gender</label>
-						<select v-model="editForm.gender" id="gender"
-							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-50">
-							<option disabled selected>Select Gender</option>
-							<option value="male">Male</option>
-							<option value="female">Female</option>
-							<option value="none">None</option>
-						</select>
+					<div class="col-span-6">
+						<label for="po_directory" class="mb-2 block text-sm font-medium text-gray-700">PO FTP Server Directory</label>
+						<input v-model="editForm.po_directory" type="text" id="po_directory"
+							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 placeholder:text-sm"
+							:class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.po_directory }" placeholder="PO FTP Server Directory" />
+						<div v-if="errors.po_directory" class="text-sm text-red-500 mt-1">
+							{{ errors.po_directory }}
+						</div>
 					</div>
-					<div class="col-span-4 sm:col-span-2">
-						<label for="age" class="mb-2 block text-sm font-medium text-gray-500">Age</label>
-						<input v-model="editForm.age" type="number" id="age"
-							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500"
-							placeholder="1" />
+					<div class="col-span-6">
+						<label for="ftp_username" class="mb-2 block text-sm font-medium text-gray-700">PO FTP Username</label>
+						<input v-model="editForm.ftp_username" type="text" id="ftp_username"
+							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 placeholder:text-sm"
+							:class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.ftp_username }" placeholder="PO FTP Username" />
+						<div v-if="errors.ftp_username" class="text-sm text-red-500 mt-1">
+							{{ errors.ftp_username }}
+						</div>
 					</div>
+					<div class="col-span-6">
+						<label for="ftp_password" class="mb-2 block text-sm font-medium text-gray-700">PO FTP Password</label>
+						<input v-model="editForm.ftp_password" type="password" id="ftp_password"
+							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 placeholder:text-sm"
+							:class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.ftp_password }" placeholder="PO FTP Password" />
+						<div v-if="errors.ftp_password" class="text-sm text-red-500 mt-1">
+							{{ errors.ftp_password }}
+						</div>
+					</div>
+					<!--Invoice Fields-->
+					<div class="col-span-6">
+						<label for="invoice_ip" class="mb-2 block text-sm font-medium text-gray-700">Invoice FTP Server IP</label>
+						<input v-model="editForm.invoice_ip" type="text" id="invoice_ip"
+							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 placeholder:text-sm"
+							:class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.invoice_ip }" placeholder="Invoice FTP Server IP" />
+						<div v-if="errors.invoice_ip" class="text-sm text-red-500 mt-1">
+							{{ errors.invoice_ip }}
+						</div>
+					</div>
+					<div class="col-span-6">
+						<label for="invoice_port" class="mb-2 block text-sm font-medium text-gray-700">Invoice FTP Server Port</label>
+						<input v-model="editForm.invoice_port" type="text" id="invoice_port"
+							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 placeholder:text-sm"
+							:class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.invoice_port }" placeholder="Invoice FTP Server Port" />
+						<div v-if="errors.invoice_port" class="text-sm text-red-500 mt-1">
+							{{ errors.invoice_port }}
+						</div>
+					</div>
+					<div class="col-span-6">
+						<label for="invoice_directory" class="mb-2 block text-sm font-medium text-gray-700">Invoice FTP Server Directory</label>
+						<input v-model="editForm.invoice_directory" type="text" id="invoice_directory"
+							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 placeholder:text-sm"
+							:class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.invoice_directory }" placeholder="Invoice FTP Server Directory" />
+						<div v-if="errors.invoice_directory" class="text-sm text-red-500 mt-1">
+							{{ errors.invoice_directory }}
+						</div>
+					</div>
+					<div class="col-span-6">
+						<label for="ftp_username_invoice" class="mb-2 block text-sm font-medium text-gray-700">Invoice FTP Username</label>
+						<input v-model="editForm.ftp_username_invoice" type="text" id="ftp_username_invoice"
+							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 placeholder:text-sm"
+							:class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.ftp_username_invoice }" placeholder="Invoice FTP Username" />
+						<div v-if="errors.ftp_username_invoice" class="text-sm text-red-500 mt-1">
+							{{ errors.ftp_username_invoice }}
+						</div>
+					</div>
+					<div class="col-span-6">
+						<label for="ftp_password_invoice" class="mb-2 block text-sm font-medium text-gray-700">Invoice FTP Password</label>
+						<input v-model="editForm.ftp_password_invoice" type="password" id="ftp_password_invoice"
+							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 placeholder:text-sm"
+							:class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.ftp_password_invoice }" placeholder="Invoice FTP Password" />
+						<div v-if="errors.ftp_password_invoice" class="text-sm text-red-500 mt-1">
+							{{ errors.ftp_password_invoice }}
+						</div>
+					</div>
+					<div class="col-span-12">
+						<label for="file_pattern" class="mb-2 block text-sm font-medium text-gray-700">File Pattern</label>
+						<input v-model="editForm.file_pattern" type="text" id="file_pattern"
+							class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 placeholder:text-sm"
+							:class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.file_pattern }" placeholder="File Pattern" />
+						<div v-if="errors.file_pattern" class="text-sm text-red-500 mt-1">
+							{{ errors.file_pattern }}
+						</div>
+					</div>
+					
 
 					<div class="col-span-12">
-						<div class="mx-auto max-w-full">
-							<label for="photo" class="mb-2 block text-sm font-medium text-gray-500">Pet Photo</label>
-							<label @dragover.prevent @drop.prevent="handleFileDrop"
-								class="flex w-full cursor-pointer appearance-none items-center justify-center rounded-md border-2 border-dashed border-gray-200 p-6 transition-all hover:border-indigo-700"
-								:class="{ 'border-red-500 focus:border-red-500 focus:ring-red-500': errors.photo }">
-								<div class="space-y-1 text-center">
-									<div class="mx-auto inline-flex h-20 w-20 items-center justify-center rounded-full bg-gray-100">
-										<img v-if="editForm.photo && editForm.photo.url" :src="editForm.photo.url" alt="Pet Photo" class="h-20 w-20 rounded-full" />
-										<div v-else>
-											<!-- Your placeholder for no image -->
-											<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-												stroke="currentColor" class="h-6 w-6 text-gray-500">
-												<path stroke-linecap="round" stroke-linejoin="round"
-													d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
-											</svg>
-										</div>
-									</div>
-									<div class="text-gray-600">
-										<a href="#" class="font-medium text-indigo-500 hover:text-indigo-700">Click to upload</a> or drag and
-										drop
-									</div>
-									<p class="text-sm text-gray-500">PNG or JPG (max. 1mb)</p>
-								</div>
-								<input @change="handleFileChange" id="photo" name="photo" type="file" class="sr-only" />
-							</label>
-							<div v-if="errors.photo" class="text-sm text-red-500 mt-1">
-								{{ errors.photo }}
-							</div>
-						</div>
+						
 					</div>
 
 					<div class="col-span-12">
 						<button type="submit" :disabled="isSubmitting"
 							class="w-full rounded-lg border border-indigo-700 bg-indigo-700 px-8 py-4 text-center text-lg font-medium text-white shadow-sm transition-all hover:border-indigo-800 hover:bg-indigo-800 disabled:cursor-not-allowed disabled:border-indigo-300 disabled:bg-indigo-300">
-							Edit Pet
+							Edit Vendor
 						</button>
 					</div>
 
@@ -345,53 +226,9 @@ onMounted(async () => {
 		</div>
 
 		<div class="max-w-full px-2 py-10 sm:px-0">
-			<TabGroup>
-				<TabList class="flex flex-col sm:flex-row space-x-1 rounded-xl bg-blue-900/20 p-1">
-					<Tab as="template" v-slot="{ selected }" v-for="tab in tabs" :key="tab">
-						<button :class="[
-							'w-full rounded-lg py-2.5 text-sm font-medium leading-5',
-              'ring-white/60 ring-offset-2 focus:outline-none focus:ring-2',
-              selected
-                ? 'bg-white text-indigo-700 shadow'
-                : 'text-blue-100 hover:bg-white/[0.12] hover:text-white',
-						]">
-							{{ tab }}
-						</button>
-					</Tab>
-				</TabList>
-				<TabPanels>
-					<TabPanel class="mt-2">
-						<VaccinationsForm :pet="pet" />
-					</TabPanel>
-					<TabPanel class="mt-2">
-						<MedicalHistoriesForm :pet="pet" />
-					</TabPanel>
-					<TabPanel class="mt-2">
-						<MedicationsForm :pet="pet" />
-					</TabPanel>
-					<TabPanel class="mt-2">
-						<SurgicalHistoriesForm :pet="pet" />
-					</TabPanel>
-					<TabPanel class="mt-2">
-						<Gallery :pet="pet" />
-					</TabPanel>
-				</TabPanels>
-			</TabGroup>
+			
 		</div>
 
 
 	</AppLayout>
 </template>
-
-<style scoped>
-.multiselect>>>.multiselect__tags {
-	border: 1px solid #D1D5DBFF;
-}
-
-.multiselect.error>>>.multiselect__tags {
-	border: 1px solid #f05252;
-}
-
-.dp__theme_light {
-	--dp-border-color: rgb(209 213 219);
-}</style>

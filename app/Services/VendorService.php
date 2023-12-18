@@ -16,14 +16,11 @@ class VendorService
 
     }
 
-    public function updatePet($id, array $data): void
+    public function updateVendor($id, array $data): void
     {
-        $pet = Pet::findOrFail($id);
-        $pet->update($data);
+        $vendor = Vendor::findOrFail($id);
+        $vendor->update($data);
 
-        if (array_key_exists('photo', $data) && $data['photo']->isValid()) {
-            $this->handlePhotoUpload($pet, $data['photo']);
-        }
     }
 
     public function deleteVendor($id): void

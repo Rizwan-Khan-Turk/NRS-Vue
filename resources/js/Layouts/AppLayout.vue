@@ -52,7 +52,7 @@ const logout = () => {
 						<a href="/dashboard" class="flex items-center justify-between mr-4">
 							<img src="/img/logo.png" class="mr-3" alt="Flowbite Logo" />
 							<span
-								class="self-center text-2xl text-indigo-900 font-semibold whitespace-nowrap dark:text-white">Pet Care</span>
+								class="self-center text-2xl text-indigo-900 font-semibold whitespace-nowrap dark:text-white">NRS EDI Integration</span>
 						</a>
 					</div>
 					<div class="flex items-center lg:order-2">

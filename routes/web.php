@@ -120,4 +120,7 @@ Route::middleware([
     Route::delete('/vendor/{id}', [VendorController::class, 'destroy'])->name('vendors.destroy');
     Route::get('/vendor/create', [VendorController::class, 'create'])->name('vendor.create');
     Route::post('/vendor/store', [VendorController::class, 'store'])->name('vendor.store');
+    Route::get('/vendor/{id}/edit', [VendorController::class, 'edit'])->name('vendor.edit');
+    Route::post('/vendor/{id}', [VendorController::class, 'update'])->name('vendor.update');
+
 });

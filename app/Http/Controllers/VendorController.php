@@ -129,24 +129,43 @@ class VendorController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Vendor $vendor)
-    {
-        //
-    }
+    // public function edit(Vendor $vendor)
+    // {
+    //     //
+    // }
+    public function edit($id): Response
+	{
+		$vendor = Vendor::find($id);
+
+		return Inertia::render('Vendor/Edit', [
+			'vendor' => $vendor
+		]);
+	}
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateVendorRequest $request, Vendor $vendor)
-    {
-        if (checkPermission($this->module_name, [$this->update])) {
-            $vendor->update($request->all());
-            return response()->json(['message' => 'Vendor updated successfully!', 'vendor' => $vendor]);
-        } else {
-            // Throw an error if the user does not have permission
-            abort(403, 'Unauthorized action.');
-        }
-    }
+    // public function update(UpdateVendorRequest $request, Vendor $vendor)
+    // {
+      
+    //     $vendor->update($request->all());
+    //     return response()->json(['message' => 'Vendor updated successfully!', 'vendor' => $vendor]);
+        
+    // }
+    public function update($id, Request $request)
+	{
+        
+        $vendorData = $request->only([
+            'vname', 'vcode', 'po_ip', 'po_port', 'po_directory',
+            'invoice_ip', 'invoice_port', 'invoice_directory', 'status','ftp_username','ftp_password','file_pattern','ftp_username_invoice','ftp_password_invoice'
+        ]);
+        //print_r($vendorData);
+		$this->vendorService->updateVendor($id, $vendorData);
+
+		return response()->json([
+			'message' => 'Vendor successfully updated!'
+		], 200);
+	}
 
     /**
      * Remove the specified resource from storage.
