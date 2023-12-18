@@ -10,13 +10,10 @@ use App\Models\Vendor;
 
 class VendorService
 {
-    public function createPet(array $data): void
+    public function createVendor(array $data): void
     {
-        $pet = Pet::create($data);
+        $vendor = Vendor::create($data);
 
-        if (array_key_exists('photo', $data) && $data['photo']->isValid()) {
-            $this->handlePhotoUpload($pet, $data['photo']);
-        }
     }
 
     public function updatePet($id, array $data): void

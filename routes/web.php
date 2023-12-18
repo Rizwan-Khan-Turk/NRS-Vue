@@ -118,4 +118,6 @@ Route::middleware([
     Route::get('/vendor/fetchAllVendors', [VendorController::class, 'fetchAllVendors'])->name('vendor.fetchAll');
     Route::post('/vendor/search', [VendorController::class, 'search'])->name('vendors.search');
     Route::delete('/vendor/{id}', [VendorController::class, 'destroy'])->name('vendors.destroy');
+    Route::get('/vendor/create', [VendorController::class, 'create'])->name('vendor.create');
+    Route::post('/vendor/store', [VendorController::class, 'store'])->name('vendor.store');
 });

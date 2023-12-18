@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Vendor;
 use App\Services\VendorService;
+use App\Http\Requests\Vendor\VendorStoreRequest;
 use App\Http\Requests\StoreVendorRequest;
 use App\Http\Requests\UpdateVendorRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
+use Inertia\Response;
 
 
 
@@ -69,30 +71,46 @@ class VendorController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
+    // public function create()
+    // {
+    //     //
+    // }
+    public function create(): Response
+	{
+		return Inertia::render('Vendor/Create');
+	}
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreVendorRequest $request)
+    public function store(Request $request)
     {
 
-        if (checkPermission($this->module_name, [$this->add])) {
-            $vendorData = $request->only([
-                'vname', 'vcode', 'po_ip', 'po_port', 'po_directory',
-                'invoice_ip', 'invoice_port', 'invoice_directory','ftp_username','ftp_password','file_pattern','ftp_username_invoice','ftp_password_invoice',
-            ]);
+        // if (checkPermission($this->module_name, [$this->add])) {
+        //     $vendorData = $request->only([
+        //         'vname', 'vcode', 'po_ip', 'po_port', 'po_directory',
+        //         'invoice_ip', 'invoice_port', 'invoice_directory','ftp_username','ftp_password','file_pattern','ftp_username_invoice','ftp_password_invoice',
+        //     ]);
 
-            Vendor::create($vendorData);
+        //     Vendor::create($vendorData);
 
-            return response()->json(['message' => 'Vendor created successfully!'], 201);
-        } else {
-            // Throw an error if the user does not have permission
-            abort(403, 'Unauthorized action.');
-        }
+        //     return response()->json(['message' => 'Vendor created successfully!'], 201);
+        // } else {
+        //     // Throw an error if the user does not have permission
+        //     abort(403, 'Unauthorized action.');
+        // }
+        $vendorData = $request->only([
+                    'vname', 'vcode', 'po_ip', 'po_port', 'po_directory',
+                     'invoice_ip', 'invoice_port', 'invoice_directory','ftp_username','ftp_password','file_pattern','ftp_username_invoice','ftp_password_invoice',
+        ]);
+        $this->vendorService->createVendor($vendorData);
+
+		return response()->json([
+			'message' => 'Vendor successfully added!'
+		], 201);
+
+
+
     }
 
     /**
