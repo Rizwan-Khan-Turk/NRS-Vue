@@ -13,6 +13,7 @@ use App\Http\Controllers\VaccinationController;
 use App\Http\Controllers\MedicalHistoryController;
 use App\Http\Controllers\MedicationController;
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\VendorController;
 
 /*
 |--------------------------------------------------------------------------
@@ -111,4 +112,10 @@ Route::middleware([
     Route::get('/items/{slug}/edit', [ItemController::class, 'edit'])->name('items.edit');
     Route::put('/items/{id}', [ItemController::class, 'update'])->name('items.update');
     Route::delete('/items/{id}', [ItemController::class, 'destroy'])->name('items.destroy');
+
+    // Vendor
+    Route::get('/vendor', [VendorController::class, 'index'])->name('vendor');
+    Route::get('/vendor/fetchAllVendors', [VendorController::class, 'fetchAllVendors'])->name('vendor.fetchAll');
+    Route::post('/vendor/search', [VendorController::class, 'search'])->name('vendors.search');
+    Route::delete('/vendor/{id}', [VendorController::class, 'destroy'])->name('vendors.destroy');
 });

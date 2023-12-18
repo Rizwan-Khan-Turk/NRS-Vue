@@ -137,6 +137,14 @@ const logout = () => {
 							</NavLink>
 						</li>
 						<li>
+							<NavLink :href="route('vendor')" :active="route().current('vendor')"
+								class="flex items-center p-2 text-base font-medium text-gray-500 hover:text-gray-100 rounded-lg dark:text-white hover:bg-gray-800 dark:hover:bg-gray-700 group">
+								<BoltIcon
+									class="w-6 h-6transition duration-75 dark:text-gray-400 group-hover:text-gray-100 dark:group-hover:text-white" />
+								<span class="ml-3">Vendor Configuration</span>
+							</NavLink>
+						</li>
+						<li>
 							<NavLink :href="route('appointments')" :active="route().current('appointments')"
 								class="flex items-center p-2 text-base font-medium text-gray-500 hover:text-gray-100 rounded-lg dark:text-white hover:bg-gray-800 dark:hover:bg-gray-700 group">
 								<CalendarDaysIcon
