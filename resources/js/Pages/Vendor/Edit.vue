@@ -2,31 +2,14 @@
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { ref, watch, nextTick, defineProps, onMounted, reactive } from 'vue'
 import { usePage } from "@inertiajs/vue3"
-import VueMultiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.css'
 import { useToast } from "vue-toastification"
-import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue'
-import VaccinationsForm from '@/Pages/Pets/Partials/VaccinationsForm.vue'
-import MedicationsForm from '@/Pages/Pets/Partials/MedicationsForm.vue'
-import MedicalHistoriesForm from '@/Pages/Pets/Partials/MedicalHistoriesForm.vue'
-import SurgicalHistoriesForm from '@/Pages/Pets/Partials/SurgicalHistoriesForm.vue'
-import Gallery from '@/Pages/Pets/Partials/Gallery.vue'
-import { validateForm, errors, watchFields } from '@/Validation/Pets/Index'
+import { validateForm, errors, watchFields } from '@/Validation/Vendor/Index'
 
 const isSubmitting = ref(false)
-const selectedUser = ref(null)
-const matchingUsers = ref([])
-const selectedSpecies = ref(null)
-const selectedBreed = ref(null)
-const matchingSpecies = ref([])
-const matchingBreeds = ref([])
-const loadingBreeds = ref(false)
-const selectedFile = ref(null)
-const tabs = ref(['Vaccinations', 'Medical History', 'Medications', 'Surgical History', 'Gallery'])
 const toast = useToast()
-const newImage = ref(null)
 
-const { pet } = usePage().props
+//const { pet } = usePage().props
 
 // Get the pet data from the prop
 const props = defineProps({

@@ -2,10 +2,9 @@
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { ref, watch, nextTick, onMounted } from 'vue'
 import { useForm } from "@inertiajs/vue3"
-import VueMultiselect from 'vue-multiselect'
 import 'vue-multiselect/dist/vue-multiselect.css'
 import { useToast } from "vue-toastification"
-import { errors, watchFields } from '@/Validation/Pets/Index'
+import { errors, watchFields } from '@/Validation/Vendor/Index'
 
 const isSubmitting = ref(false)
 
