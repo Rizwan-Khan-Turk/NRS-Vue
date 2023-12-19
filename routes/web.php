@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\VendorController;
+use App\Http\Controllers\AuditLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,4 +41,8 @@ Route::middleware([
     Route::get('/vendor/{id}/edit', [VendorController::class, 'edit'])->name('vendor.edit');
     Route::post('/vendor/{id}', [VendorController::class, 'update'])->name('vendor.update');
 
+    // Audit Log
+    Route::get('/audit', [AuditLogController::class, 'index'])->name('audit');
+    Route::get('/audit/fetchAllAuditLog', [AuditLogController::class, 'fetchAllAuditLog'])->name('audit.fetchAllAuditLog');
+    Route::post('/audit/search', [AuditLogController::class, 'search'])->name('audit.search');
 });

@@ -34,7 +34,8 @@ const submit = () => {
 
     <AuthenticationCard>
         <template #logo>
-            <AuthenticationCardLogo />
+            <!-- <AuthenticationCardLogo /> -->
+            <img src="/img/Picture2.jpg" class="mr-3" alt="Flowbite Logo" />
         </template>
 
         <div v-if="status" class="mb-4 font-medium text-sm text-green-600">

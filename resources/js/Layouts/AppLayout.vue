@@ -4,7 +4,8 @@ import { Head, Link, router } from '@inertiajs/vue3';
 import Banner from '@/Components/Banner.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
-import { UsersIcon, Squares2X2Icon, BoltIcon, CalendarDaysIcon, BeakerIcon } from '@heroicons/vue/24/outline'
+import { UsersIcon, Squares2X2Icon, BoltIcon, CalendarDaysIcon, BeakerIcon, BackwardIcon, CalendarIcon,PlusIcon,UserGroupIcon } from '@heroicons/vue/24/outline'
+
 import { initFlowbite } from 'flowbite'
 
 onMounted(() => {
@@ -50,7 +51,7 @@ const logout = () => {
 							<span class="sr-only">Toggle sidebar</span>
 						</button>
 						<a href="/dashboard" class="flex items-center justify-between mr-4">
-							<img src="/img/logo.png" class="mr-3" alt="Flowbite Logo" />
+							<img src="/img/picture-icon.png" class="mr-3" alt="Flowbite Logo" />
 							<span
 								class="self-center text-2xl text-indigo-900 font-semibold whitespace-nowrap dark:text-white">NRS EDI Integration</span>
 						</a>
@@ -123,9 +124,17 @@ const logout = () => {
 						<li>
 							<NavLink :href="route('vendor')" :active="route().current('vendor')"
 								class="flex items-center p-2 text-base font-medium text-gray-500 hover:text-gray-100 rounded-lg dark:text-white hover:bg-gray-800 dark:hover:bg-gray-700 group">
-								<BoltIcon
+								<UserGroupIcon
 									class="w-6 h-6transition duration-75 dark:text-gray-400 group-hover:text-gray-100 dark:group-hover:text-white" />
 								<span class="ml-3">Vendor Configuration</span>
+							</NavLink>
+						</li>
+						<li>
+							<NavLink :href="route('audit')" :active="route().current('audit')"
+								class="flex items-center p-2 text-base font-medium text-gray-500 hover:text-gray-100 rounded-lg dark:text-white hover:bg-gray-800 dark:hover:bg-gray-700 group">
+								<CalendarIcon
+									class="w-6 h-6transition duration-75 dark:text-gray-400 group-hover:text-gray-100 dark:group-hover:text-white" />
+								<span class="ml-3">Audit Log</span>
 							</NavLink>
 						</li>
 					
