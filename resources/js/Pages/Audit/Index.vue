@@ -48,27 +48,6 @@ const formatTimestamp = (timestamp) => {
 const handleClear = () => {
     fetchAuditLogs();
 }
-watch(selectAll, (newVal) => {
-    audits.value.forEach(audit => {
-        if (!audit.hasOwnProperty('selected')) {
-            audit.selected = false;
-        }
-
-        if (audit.selected !== newVal) {
-            audit.selected = newVal;
-            togglePetSelection(audit.id);
-        }
-    });
-});
-const togglePetSelection = (PetId) => {
-    if (selectedPetIds.value.includes(PetId)) {
-        selectedPetIds.value = selectedPetIds.value.filter(id => id !== PetId);
-    } else {
-        selectedPetIds.value.push(PetId);
-    }
-
-    anyCheckboxSelected.value = selectedPetIds.value.length > 0;
-};
 
 const deletePet = (id) => {
     Swal.fire({
@@ -92,35 +71,6 @@ const deletePet = (id) => {
     });
 }
 
-const handleBulkDelete = () => {
-    if (selectedPetIds.value.length > 0) {
-        Swal.fire({
-            title: 'Delete Selected Pets?',
-            text: `You have selected ${selectedPetIds.value.length} audit(s). Do you want to continue?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete them',
-            cancelButtonText: 'No, keep them'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                axios.delete('/audits/bulk-delete/selected', { data: { selectedIds: selectedPetIds.value } })
-                    .then((response) => {
-                        Swal.fire('Deleted!', response.data.message, 'success')
-                        selectedPetIds.value = []
-                        anyCheckboxSelected.value = false
-                        fetchAuditLogs()
-                        nextTick(() => {
-                            selectAll.value = false;
-                        });
-                    })
-                    .catch((error) => {
-                        Swal.fire('Error!', error.response.data.message, 'error')
-                        console.error('Error:', error);
-                    });
-            }
-        });
-    }
-};
 </script>
 
 <template>
@@ -180,20 +130,14 @@ const handleBulkDelete = () => {
                         <table v-else class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead class="hidden md:table-header-group text-xs text-gray-400 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                    <th scope="col" class="px-4 py-3 w-[5%]">
-                                        <div class="flex items-center">
-                                            <input v-model="selectAll" id="checkbox-all" type="checkbox"
-                                                class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                            <label for="checkbox-all" class="sr-only">checkbox</label>
-                                        </div>
-                                    </th>
+            
                                     <th scope="col" class="px-4 py-3 w-[20%]">Transaction ID</th>
                                     <th scope="col" class="px-4 py-3 w-[20%]">Vendor Code</th>
                                     <th scope="col" class="px-4 py-3 w-[20%]">PO Number</th>
                                     <th scope="col" class="px-4 py-3 w-[40%]">Transaction Type</th>
                                     <th scope="col" class="px-4 py-3 w-[40%]">Transaction Date Time</th>
                                     <th scope="col" class="px-4 py-3 w-[40%]">Status</th>
-                                    <th scope="col" class="px-4 py-3 w-[40%]">Options</th>
+                                    <th scope="col" class="px-4 py-3 w-[40%]">Action</th>
                                     
                                 </tr>
                             </thead>
@@ -209,7 +153,7 @@ const handleBulkDelete = () => {
                                                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                                                         </svg>
                                                     </div>
-                                                    <h1 class="mt-3 text-lg text-gray-400 dark:text-white">No Vendors found</h1>
+                                                    <h1 class="mt-3 text-lg text-gray-400 dark:text-white">No Audit Log records found</h1>
                                                     <div class="flex flex-col sm:flex-row items-center mt-4 sm:mx-auto gap-y-3 sm:gap-x-3">
                                                         <button @click="handleClear" class="px-5 py-2 text-sm text-gray-700 transition-colors duration-200 bg-white border rounded-lg sm:w-auto dark:hover:bg-gray-800 dark:bg-gray-900 hover:bg-gray-100 dark:text-gray-200 dark:border-gray-700">
                                                             Clear Search
@@ -223,14 +167,6 @@ const handleBulkDelete = () => {
                                     </td>
                                 </tr>
                                 <tr v-for="(audit, index) in audits" :key="audit.id" class="lg:table-row flex flex-col lg:flex-row border-b dark:border-gray-700">
-                                    <th scope="row" class="px-4 py-3">
-                                        <div class="flex items-center">
-                                            <input v-model="audit.selected" :id="'checkbox-' + audit.id"
-                                                @click="togglePetSelection(audit.id)" type="checkbox"
-                                                class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                            <label for="checkbox-table-1" class="sr-only">checkbox</label>
-                                        </div>
-                                    </th>
                                     <td class="px-4 py-1 lg:py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ audit.id }}
                                     </td>
@@ -242,11 +178,21 @@ const handleBulkDelete = () => {
                                     <td class="px-4 py-1 lg:py-3">{{ formatTimestamp(audit.created_at) }}</td>
                                     <td class="px-4 py-1 lg:py-3">{{ audit.status }}</td>
                                     <td class="px-4 py-4 lg:py-3 flex items-center justify-start lg:justify-end">
+                                        <template v-if="audit.transactionType === 'Purchase Order'">
                                         <Link :href="route('audit.show', { id: audit.id })"
                                             class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100">
                                         <EyeIcon class="w-5 h-5 mr-1" />
                                         <span class="sr-only">View</span>
                                         </Link>
+                                        </template>
+                                        <template v-if="audit.transactionType === 'Invoice'">
+                                        <Link :href="route('audit.invoiceshow', { id: audit.id })"
+                                            class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100">
+                                        <EyeIcon class="w-5 h-5 mr-1" />
+                                        <span class="sr-only">View</span>
+                                        </Link>
+                                        </template>
+
                                         <!-- <Link :href="route('audit.edit', { id: audit.id })"
                                             class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100">
                                         <PencilSquareIcon class="w-5 h-5 text-indigo-500 hover:text-indigo-800 mr-1" />

@@ -521,7 +521,9 @@ class AuditLogController extends Controller
     {
         $audit = AuditLog::where('id', $id)->first();
         // Return view with list of vendors
-        return view('audit.invoice', compact('audit','id'));
+        return Inertia::render('Audit/Edit', [
+            'audit' => $audit,
+        ]);
     }
 
     public function show(AuditLog $audit)

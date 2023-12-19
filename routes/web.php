@@ -46,4 +46,5 @@ Route::middleware([
     Route::get('/audit/fetchAllAuditLog', [AuditLogController::class, 'fetchAllAuditLog'])->name('audit.fetchAllAuditLog');
     Route::post('/audit/search', [AuditLogController::class, 'search'])->name('audit.search');
     Route::get('/auditdetails/{id}',[AuditLogController::class, 'details'])->name('audit.show');
+    Route::get('/auditdetailsinvoice/{id}',[AuditLogController::class, 'invoicedetails'])->name('audit.invoiceshow');
 });
