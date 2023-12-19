@@ -43,27 +43,6 @@ const handleSearch = async ({ search, keywords }) => {
 const handleClear = () => {
     fetchVendors();
 }
-watch(selectAll, (newVal) => {
-    vendors.value.forEach(vendor => {
-        if (!vendor.hasOwnProperty('selected')) {
-            vendor.selected = false;
-        }
-
-        if (vendor.selected !== newVal) {
-            vendor.selected = newVal;
-            togglePetSelection(vendor.id);
-        }
-    });
-});
-const togglePetSelection = (PetId) => {
-    if (selectedPetIds.value.includes(PetId)) {
-        selectedPetIds.value = selectedPetIds.value.filter(id => id !== PetId);
-    } else {
-        selectedPetIds.value.push(PetId);
-    }
-
-    anyCheckboxSelected.value = selectedPetIds.value.length > 0;
-};
 
 const deletePet = (id) => {
     Swal.fire({
@@ -87,35 +66,6 @@ const deletePet = (id) => {
     });
 }
 
-const handleBulkDelete = () => {
-    if (selectedPetIds.value.length > 0) {
-        Swal.fire({
-            title: 'Delete Selected Pets?',
-            text: `You have selected ${selectedPetIds.value.length} vendor(s). Do you want to continue?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete them',
-            cancelButtonText: 'No, keep them'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                axios.delete('/vendors/bulk-delete/selected', { data: { selectedIds: selectedPetIds.value } })
-                    .then((response) => {
-                        Swal.fire('Deleted!', response.data.message, 'success')
-                        selectedPetIds.value = []
-                        anyCheckboxSelected.value = false
-                        fetchVendors()
-                        nextTick(() => {
-                            selectAll.value = false;
-                        });
-                    })
-                    .catch((error) => {
-                        Swal.fire('Error!', error.response.data.message, 'error')
-                        console.error('Error:', error);
-                    });
-            }
-        });
-    }
-};
 </script>
 
 <template>
@@ -179,13 +129,7 @@ const handleBulkDelete = () => {
                         <table v-else class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                             <thead class="hidden md:table-header-group text-xs text-gray-400 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                    <th scope="col" class="px-4 py-3 w-[5%]">
-                                        <div class="flex items-center">
-                                            <input v-model="selectAll" id="checkbox-all" type="checkbox"
-                                                class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                            <label for="checkbox-all" class="sr-only">checkbox</label>
-                                        </div>
-                                    </th>
+                                
                                     <th scope="col" class="px-4 py-3 w-[20%]">S.No</th>
                                     <th scope="col" class="px-4 py-3 w-[20%]">Vendor Name</th>
                                     <th scope="col" class="px-4 py-3 w-[20%]">Vendor Code</th>
@@ -228,14 +172,7 @@ const handleBulkDelete = () => {
                                     </td>
                                 </tr>
                                 <tr v-for="(vendor, index) in vendors" :key="vendor.id" class="lg:table-row flex flex-col lg:flex-row border-b dark:border-gray-700">
-                                    <th scope="row" class="px-4 py-3">
-                                        <div class="flex items-center">
-                                            <input v-model="vendor.selected" :id="'checkbox-' + vendor.id"
-                                                @click="togglePetSelection(vendor.id)" type="checkbox"
-                                                class="w-4 h-4 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                            <label for="checkbox-table-1" class="sr-only">checkbox</label>
-                                        </div>
-                                    </th>
+                                    
                                     <td class="px-4 py-1 lg:py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                         {{ index + 1 }}
                                     </td>
