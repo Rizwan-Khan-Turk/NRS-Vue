@@ -508,11 +508,14 @@ class AuditLogController extends Controller
         // $id = $this->$id;
         $audit = AuditLog::where('id', $id)->first();
         // Return view with list of vendors
-        return view('audit.details', compact('audit','id'));
+        //return view('audit.details', compact('audit','id'));
         //} else {
         // Throw an error if user does not have permission
         //  abort(403, 'Unauthorized action.');
         //}
+        return Inertia::render('Audit/Create', [
+            'audit' => $audit,
+        ]);
     }
     public function invoicedetails($id)
     {

@@ -40,6 +40,11 @@ const handleSearch = async ({ search, keywords }) => {
         audits.value = await search('/audit/search');
     }
 }
+const formatTimestamp = (timestamp) => {
+    // Format timestamp using moment library
+    return moment(timestamp).format('YYYY-MM-DD HH:mm:ss');
+};
+
 const handleClear = () => {
     fetchAuditLogs();
 }
@@ -234,14 +239,14 @@ const handleBulkDelete = () => {
                                     <td class="px-4 py-1 lg:py-3">
                                     {{ audit.transactionType}}
                                     </td>
-                                    <td class="px-4 py-1 lg:py-3">{{ audit.created_at }}</td>
+                                    <td class="px-4 py-1 lg:py-3">{{ formatTimestamp(audit.created_at) }}</td>
                                     <td class="px-4 py-1 lg:py-3">{{ audit.status }}</td>
                                     <td class="px-4 py-4 lg:py-3 flex items-center justify-start lg:justify-end">
-                                        <!-- <Link :href="route('pets.show', { slug: audit.slug })"
+                                        <Link :href="route('audit.show', { id: audit.id })"
                                             class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100">
                                         <EyeIcon class="w-5 h-5 mr-1" />
                                         <span class="sr-only">View</span>
-                                        </Link>-->
+                                        </Link>
                                         <!-- <Link :href="route('audit.edit', { id: audit.id })"
                                             class="inline-flex items-center p-0.5 text-sm font-medium text-center text-gray-500 hover:text-gray-800 rounded-lg focus:outline-none dark:text-gray-400 dark:hover:text-gray-100">
                                         <PencilSquareIcon class="w-5 h-5 text-indigo-500 hover:text-indigo-800 mr-1" />
