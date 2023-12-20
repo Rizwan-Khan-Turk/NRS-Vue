@@ -57,6 +57,8 @@ Route::middleware([
     Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
     Route::post('/user/store', [UserController::class, 'store'])->name('user.store');
     Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
+    Route::post('/user/{id}', [UserController::class, 'update'])->name('user.update');
+
 
 
 

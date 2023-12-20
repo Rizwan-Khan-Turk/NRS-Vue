@@ -120,45 +120,66 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(User $user)
-    {
-        $permissions = $user->permissions; // Assuming there is a relationship set up
-        return response()->json(['user' => $user, 'permissions' => $permissions]);
-    }
+    // public function edit(User $user)
+    // {
+    //     $permissions = $user->permissions; // Assuming there is a relationship set up
+    //     return response()->json(['user' => $user, 'permissions' => $permissions]);
+    // }
+    public function edit($id): Response
+	{
+		$user = User::find($id);
+
+		return Inertia::render('User/Edit', [
+			'user' => $user
+		]);
+	}
+
 
     /**
      * Update the specified resource in storage.
      */
 
-    public function update(UpdateUserRequest $request, UserService $userService, $id)
-    {
-        $user = User::find($id);
+    // public function update(UpdateUserRequest $request, UserService $userService, $id)
+    // {
+    //     $user = User::find($id);
 
-        if (!$user) {
-            return response()->json(['success' => false, 'errors' => ['User not found.']], 404);
-        }
+    //     if (!$user) {
+    //         return response()->json(['success' => false, 'errors' => ['User not found.']], 404);
+    //     }
 
-        $data = $request->only(['first_name', 'last_name', 'status']); // Include other fields as necessary
-        $user = $userService->update($id, $data);
+    //     $data = $request->only(['first_name', 'last_name', 'status']); // Include other fields as necessary
+    //     $user = $userService->update($id, $data);
 
-        // Define modules
-        $modules = [
-            'user_management',
-            'vendor_management',
-            'audit_management',
-        ];
+    //     // Define modules
+    //     $modules = [
+    //         'user_management',
+    //         'vendor_management',
+    //         'audit_management',
+    //     ];
 
-        // Update permissions for each module
-        foreach ($modules as $module) {
-            $permissions = $request->input($module, []);
-            $permissionString = implode(',', $permissions);
+    //     // Update permissions for each module
+    //     foreach ($modules as $module) {
+    //         $permissions = $request->input($module, []);
+    //         $permissionString = implode(',', $permissions);
 
-            // Use the updateOrCreate method to either update the existing permission or create a new one
-            $user->permissions()->updateOrCreate(['module_name' => $module], ['permissions' => $permissionString]);
-        }
+    //         // Use the updateOrCreate method to either update the existing permission or create a new one
+    //         $user->permissions()->updateOrCreate(['module_name' => $module], ['permissions' => $permissionString]);
+    //     }
 
-        return response()->json(['success' => true], 200);
-    }
+    //     return response()->json(['success' => true], 200);
+    // }
+
+    public function update($id, Request $request)
+	{
+        
+        $userData = $request->only([
+            'name', 'last_name', 'email'                  
+        ]);
+		$this->userService->updateUser($id, $userData);
+		return response()->json([
+			'message' => 'User successfully updated!'
+		], 200);
+	}
 
     /**
      * Remove the specified resource from storage.

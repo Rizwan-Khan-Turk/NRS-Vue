@@ -84,6 +84,12 @@ class UserService
 
         return $user;
     }
+    public function updateUser($id, array $data): void
+    {
+        $user = User::findOrFail($id);
+        $user->update($data);
+
+    }
 
     protected function generatePassword()
     {
