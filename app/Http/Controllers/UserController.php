@@ -52,43 +52,62 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
+    // public function create()
+    // {
+    //     //
+    // }
+    public function create(): Response
+	{
+		return Inertia::render('User/Create');
+	}
+
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(UserWithoutPasswordRequest $request)
+    // public function store(UserWithoutPasswordRequest $request)
+    // {
+
+    //     $userData = $request->only('first_name', 'last_name', 'email');
+    //     $user = $this->userService->createUserWithoutPassword($userData);
+
+    //     // Get permissions from the request
+    //     $permissionsData = [];
+    //     $modules = [
+    //         'user_management' => 'user_management',
+    //         'vendor_management' => 'vendor_management',
+    //         'audit_management' => 'audit_management',
+    //     ];
+
+    //     foreach ($modules as $key => $label) {
+    //         $permissions = $request->input('permissions.' . $key, []);
+    //         $permissionsData[] = [
+    //             'module_name' => $label,
+    //             'permissions' => implode(',', $permissions),
+    //         ];
+    //     }
+
+    //     // Attach permissions to the user
+    //     foreach ($permissionsData as $permissionData) {
+    //         $user->permissions()->create($permissionData);
+    //     }
+
+
+    //     return response()->json(['success' => true], 200);
+    // }
+
+    public function store(Request $request)
     {
+        $userData = $request->only([
+                    'name', 'last_name', 'email'                  
+        ]);
+        // Bcrypt the password
+        $userData['password'] = bcrypt($request->input('password'));
+        $this->userService->createUser($userData);
 
-        $userData = $request->only('first_name', 'last_name', 'email');
-        $user = $this->userService->createUserWithoutPassword($userData);
-
-        // Get permissions from the request
-        $permissionsData = [];
-        $modules = [
-            'user_management' => 'user_management',
-            'vendor_management' => 'vendor_management',
-            'audit_management' => 'audit_management',
-        ];
-
-        foreach ($modules as $key => $label) {
-            $permissions = $request->input('permissions.' . $key, []);
-            $permissionsData[] = [
-                'module_name' => $label,
-                'permissions' => implode(',', $permissions),
-            ];
-        }
-
-        // Attach permissions to the user
-        foreach ($permissionsData as $permissionData) {
-            $user->permissions()->create($permissionData);
-        }
-
-
-        return response()->json(['success' => true], 200);
+		return response()->json([
+			'message' => 'User successfully created!'
+		], 201);
     }
     /**
      * Display the specified resource.

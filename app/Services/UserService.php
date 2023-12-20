@@ -37,6 +37,10 @@ class UserService
         })->get();
         
     }
+    public function createUser(array $data): void
+    {
+        $user = User::create($data);
+    }
     
     public function deleteUser($id): void
     {
