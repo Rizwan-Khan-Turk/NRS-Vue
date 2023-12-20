@@ -133,7 +133,7 @@ class PurchaseOrderController extends Controller
     }
     public function sendEmail()
     {
-        $user = User::find(3);
+        $user = User::find(2);
         $po_number = "PO12345678910";
         $email = $user->email;
         Mail::to($email)->send(new UserWelcomeEmail($po_number));
