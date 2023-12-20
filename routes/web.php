@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\AuditLogController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,4 +48,15 @@ Route::middleware([
     Route::post('/audit/search', [AuditLogController::class, 'search'])->name('audit.search');
     Route::get('/auditdetails/{id}',[AuditLogController::class, 'details'])->name('audit.show');
     Route::get('/auditdetailsinvoice/{id}',[AuditLogController::class, 'invoicedetails'])->name('audit.invoiceshow');
+
+    // User Management
+    Route::get('/users', [UserController::class, 'index'])->name('users');
+    Route::get('/user/fetchAllUsers', [UserController::class, 'fetchAllUsers'])->name('users.fetchAllUsers');
+    Route::post('/user/search', [UserController::class, 'search'])->name('user.search');
+    Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+    Route::get('/user/create', [UserController::class, 'create'])->name('user.create');
+    Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
+
+
+
 });

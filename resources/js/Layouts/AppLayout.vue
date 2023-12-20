@@ -122,6 +122,14 @@ const logout = () => {
 							</NavLink>
 						</li>
 						<li>
+							<NavLink :href="route('users')" :active="route().current('users')"
+								class="flex items-center p-2 text-base font-medium text-gray-500 hover:text-gray-100 rounded-lg dark:text-white hover:bg-gray-800 dark:hover:bg-gray-700 group">
+								<UsersIcon
+									class="w-6 h-6 transition duration-75 dark:text-gray-400 group-hover:text-gray-100 dark:group-hover:text-white" />
+								<span class="ml-3">User Management</span>
+							</NavLink>
+						</li>
+						<li>
 							<NavLink :href="route('vendor')" :active="route().current('vendor')"
 								class="flex items-center p-2 text-base font-medium text-gray-500 hover:text-gray-100 rounded-lg dark:text-white hover:bg-gray-800 dark:hover:bg-gray-700 group">
 								<UserGroupIcon
