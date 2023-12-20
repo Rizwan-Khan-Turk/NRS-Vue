@@ -26,8 +26,9 @@ use App\Http\Controllers\NotificationController;
 Route::get('/', function () {
     return redirect()->route('dashboard');
 });
+Route::withoutMiddleware(['web', 'csrf'])->post('/api/purchaseOrder', [AuditLogController::class, 'store']);
 //migrated routes
-    Route::post('/api/purchaseOrder', [AuditLogController::class, 'store']);
+    //Route::post('/api/purchaseOrder', [AuditLogController::class, 'store']);
     Route::get('/download-ftp-file', [FtpController::class, 'readFileFromFtp'])->name('readFileFromFtp');
     Route::get('/multi-download-ftp-file', [FtpController::class, 'multireadFileFromFtp'])->name('multireadFileFromFtp');
     Route::get('/convert-to-json', [PurchaseOrderController::class, 'convertToJSON']);
