@@ -23,10 +23,10 @@ const parsedObject = JSON.parse(props.audit.object);
 <template>
   <AppLayout title="Audit Log Details for Purchase Order">
     <template #header>
-      <h2 class=" font-semibold  text-gray-900">Audit Log Details for Invoice</h2>
+      <h2 class=" font-semibold h2-custom text-gray-900">Audit Log Details for Invoice</h2>
     </template>
 	
-	<h2 class=" font-semibold leading-18 text-gray-900">Transaction Details</h2>
+	<h2 class=" font-semibold h2-custom leading-18 text-gray-900">Transaction Details</h2>
     <div class="max-w-full bg-white p-5 rounded-md">
       <!-- Display the table for po_number and its data -->
       <table class="table-auto w-full mb-5" id="modalDataTable">
@@ -46,7 +46,7 @@ const parsedObject = JSON.parse(props.audit.object);
         </tbody>
       </table>
     </div>
-	<h2 class=" font-semibold  text-gray-900">Data</h2>
+	<h2 class=" font-semibold h2-custom  text-gray-900">Data</h2>
 	<div class="max-w-full bg-white p-5 rounded-md">
       <!-- Display the table for po_number and its data -->
       <table class="table-auto w-full mb-5" id="modalDataTable">
@@ -68,7 +68,7 @@ const parsedObject = JSON.parse(props.audit.object);
 		</tbody>
       </table>
     </div>
-	<h2 class=" font-semibold  text-gray-900">Details</h2>
+	<h2 class=" font-semibold h2-custom  text-gray-900">Details</h2>
 	<div class="max-w-full bg-white p-5 rounded-md">
       <!-- Display the table for po_number and its data -->
       <table class="table-auto w-full mb-5" id="modalDataTable">
@@ -109,7 +109,7 @@ const parsedObject = JSON.parse(props.audit.object);
 		</tbody>
       </table>
     </div>
-	<h2 class=" font-semibold  text-gray-900">Contact Information</h2>
+	<h2 class=" font-semibold h2-custom  text-gray-900">Contact Information</h2>
 	<div class="max-w-full bg-white p-5 rounded-md">
       <!-- Display the table for po_number and its data -->
       <table class="table-auto w-full mb-5" id="modalDataTable">
@@ -133,7 +133,7 @@ const parsedObject = JSON.parse(props.audit.object);
 		</tbody>
       </table>
     </div>
-	<h2 class=" font-semibold  text-gray-900">Additional Information</h2>
+	<h2 class=" font-semibold h2-custom  text-gray-900">Additional Information</h2>
 	<div class="max-w-full bg-white p-5 rounded-md">
       <!-- Display the table for po_number and its data -->
       <table class="table-auto w-full mb-5" id="modalDataTable">
@@ -172,12 +172,12 @@ const parsedObject = JSON.parse(props.audit.object);
 #modalDataTable th {
   background-color: #f2f2f2; /* Add background color for header */
 }
-h2 {
+.h2-custom {
     text-align: center; /* Center the text */
     color: #2d3748; /* Set the text color */
     font-size: 1.75rem; /* Set the font size */
     margin-bottom: 20px; /* Add bottom margin for spacing */
-	line-height: 2.5rem;
-  }
+    line-height: 2.5rem;
+}
 </style>
 
