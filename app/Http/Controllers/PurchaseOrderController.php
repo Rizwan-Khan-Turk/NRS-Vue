@@ -143,7 +143,7 @@ class PurchaseOrderController extends Controller
     {
         // Sample fixed-format data
         //$data = '111112011-20-2020';
-        $filePath = 'C:\laragon\www\NRS\public\vendor1invoice.txt';
+        $filePath = 'C:\laragon\www\NRS-Vue\public\vendor1invoice.txt';
         if (File::exists($filePath)) {
             try {
             //test
