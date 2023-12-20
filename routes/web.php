@@ -8,6 +8,9 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\FtpController;
+use App\Http\Controllers\PurchaseOrderController;
+use App\Http\Controllers\NotificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +26,19 @@ use App\Http\Controllers\UserController;
 Route::get('/', function () {
     return redirect()->route('dashboard');
 });
+//migrated routes
+    Route::post('/api/purchaseOrder', [AuditLogController::class, 'store']);
+    Route::get('/download-ftp-file', [FtpController::class, 'readFileFromFtp'])->name('readFileFromFtp');
+    Route::get('/multi-download-ftp-file', [FtpController::class, 'multireadFileFromFtp'])->name('multireadFileFromFtp');
+    Route::get('/convert-to-json', [PurchaseOrderController::class, 'convertToJSON']);
+    Route::get('/sendInvoice', [PurchaseOrderController::class, 'sendInvoice']);
+    Route::get('/sendInvoice-fromFTP', [PurchaseOrderController::class, 'sendInvoicefromFTPServer']);
+    Route::get('/posts/store', [PostController::class, 'store']);
+    Route::post('/notifications/mark-as-read/{id}', [NotificationController::class,'markAsRead'])->name('notifications.markAsRead');
+    Route::post('/notifications/mark-all-as-read', [NotificationController::class,'markAllAsRead'])->name('notifications.markAllAsRead');
+    Route::get('/sendEmail',[PurchaseOrderController::class,'sendEmail']);
 
+//end
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
