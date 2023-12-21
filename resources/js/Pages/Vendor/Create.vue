@@ -78,6 +78,10 @@ const createVendor = async () => {
         const response = await axios.post('/vendor/store', formData);
         resetForm();
         toast.success(response.data.message);
+		// Delay the redirection for a brief moment to allow the toaster message to display
+		setTimeout(() => {
+      	window.location.href = '/vendor';
+    	}, 2000);
     } catch (error) {
         console.error(error);
         toast.error("An error occurred while submitting the form.");

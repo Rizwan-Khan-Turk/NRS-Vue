@@ -51,54 +51,57 @@ export default {
 <template>
     <AppLayout title="Dashboard">
         <template #header>
+            <div class="flex justify-between items-end">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Dashboard (Last 30 Days)
+              Dashboard
             </h2>
+            <p class="text-sm text-gray-500">Last 30 Days</p>
+          </div>
         </template>
         <!--First Row-->
         <div class="overflow-hidden sm:rounded-lg">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 <div class="border-2 border-gray-300 rounded-lg dark:border-gray-600 h-32 md:h-32 bg-white with-border-blue">
-                    <div class="flex items-center justify-center blue-text">
-                        TOTAL NUMBER OF 
+                    <div class="flex items-center justify-center blue-text font-semibold text-xl text-gray-800 leading-tight">
+                        TOTAL VENDORS 
                     </div>
-                    <div class="flex items-center justify-center blue-text">
-                        VENDORS ADDED
+                    <div class="flex items-center justify-center blue-text font-semibold text-xl text-gray-800 leading-tight">
+                         ADDED
                     </div>
-                    <div class="flex items-center justify-center">
+                    <div class="flex items-center justify-center font-semibold text-xl text-gray-800 leading-tight">
                         {{ vendorCount }}
                     </div>
                 </div>
                 <div class="border-2 border-gray-300 rounded-lg dark:border-gray-600 h-32 md:h-32 bg-white with-border-green">
-                    <div class="flex items-center justify-center green-text">
-                        VENDORS SUCCESSFUL 
+                    <div class="flex items-center justify-center green-text font-semibold text-xl text-gray-800 leading-tight">
+                        SUCCESSFUL 
                     </div>
-                    <div class="flex items-center justify-center green-text">
+                    <div class="flex items-center justify-center green-text font-semibold text-xl text-gray-800 leading-tight">
                         TRANSACTIONS
                     </div>
-                    <div class="flex items-center justify-center">
+                    <div class="flex items-center justify-center font-semibold text-xl text-gray-800 leading-tight">
                         {{ successfulTransactions }}
                     </div>
                 </div>
                 <div class="border-2 border-gray-300 rounded-lg dark:border-gray-600 h-32 md:h-32 bg-white with-border-lightblue">
-                    <div class="flex items-center justify-center lightblue-text">
+                    <div class="flex items-center justify-center lightblue-text font-semibold text-xl text-gray-800 leading-tight">
                         TOTAL NUMBER OF 
                     </div>
-                    <div class="flex items-center justify-center lightblue-text">
+                    <div class="flex items-center justify-center lightblue-text font-semibold text-xl text-gray-800 leading-tight">
                         PO RECEIVED
                     </div>
-                    <div class="flex items-center justify-center">
+                    <div class="flex items-center justify-center font-semibold text-xl text-gray-800 leading-tight">
                         {{ purchaseOrderCount }}
                     </div>
                 </div>
                 <div class="border-2 border-gray-300 rounded-lg dark:border-gray-600 h-32 md:h-32 bg-white with-border-orange">
-                    <div class="flex items-center justify-center orange-text">
+                    <div class="flex items-center justify-center orange-text font-semibold text-xl text-gray-800 leading-tight ">
                         TOTAL NUMBER
                     </div>
-                    <div class="flex items-center justify-center orange-text">
+                    <div class="flex items-center justify-center orange-text font-semibold text-xl text-gray-800 leading-tight">
                         OF INVOICE
                     </div>
-                    <div class="flex items-center justify-center">
+                    <div class="flex items-center justify-center font-semibold text-xl text-gray-800 leading-tight">
                         {{ invoiceCount }}
                     </div>
                 </div>
@@ -117,22 +120,26 @@ export default {
                   <BarChart/>
                   </div>
                 <div class="border-2 border-gray-300 rounded-lg dark:border-gray-600 h-32 md:h-72 bg-white">
-                  <span style="margin-left: 12px;">Total Number of Vendor Transactions: {{ totalTransactions }} </span>
+                  <div class="flex items-center justify-center font-semibold text-xl text-gray-800 leading-tight">
+                        Summary
+                    </div>
+                    <br/>
+                  <span class="font-semibold text-xl text-gray-800 leading-tight" style="margin-left: 12px;">Total Transactions: {{ totalTransactions }} </span>
                   <br/>
                   <progress class="progress-width" :value="totalTransactions" :max="maxValue"></progress>
                   <div class="text-center mt-2">
                   </div>
-                  <span style="margin-left: 12px;">Successful Vendor Transactions: {{ successfulTransactions }} </span>
+                  <span class="font-semibold text-xl text-gray-800 leading-tight" style="margin-left: 12px;">Successful Transactions: {{ successfulTransactions }} </span>
                   <br/>
                   <progress class="progress-width2" :value="successfulTransactions" :max="maxValue"></progress>
                   <div class="text-center mt-2">
                   </div>
-                  <span style="margin-left: 12px;">Failed Vendor Transactions: {{ failedTransactions }} </span>
+                  <span class="font-semibold text-xl text-gray-800 leading-tight" style="margin-left: 12px;">Failed Transactions: {{ failedTransactions }} </span>
                   <br/>
                   <progress class="progress-width3" :value="failedTransactions" :max="maxValue"></progress>
                   <div class="text-center mt-2">
                   </div>
-                  <span style="margin-left: 12px;">Total Number of Vendors Added: {{ vendorCount }} </span>
+                  <span class="font-semibold text-xl text-gray-800 leading-tight" style="margin-left: 12px;">Total Vendors Added: {{ vendorCount }} </span>
                   <br/>
                   <progress class="progress-width4" :value="vendorCount" :max="maxValue"></progress>
                   <div class="text-center mt-2">

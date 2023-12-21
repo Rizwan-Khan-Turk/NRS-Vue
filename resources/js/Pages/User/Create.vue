@@ -54,7 +54,10 @@ const createUser = async () => {
         const response = await axios.post('/user/store', formData);
         resetForm();
         toast.success(response.data.message);
-    } catch (error) {
+ 		// Delay the redirection for a brief moment to allow the toaster message to display
+ 		setTimeout(() => {
+      	window.location.href = '/users';
+    	}, 2000); 
         console.error(error);
         toast.error("An error occurred while submitting the form.");
     } finally {
