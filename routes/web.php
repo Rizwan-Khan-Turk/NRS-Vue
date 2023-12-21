@@ -76,6 +76,10 @@ Route::middleware([
     Route::post('/user/{id}', [UserController::class, 'update'])->name('user.update');
 
 
+    // Dashboard
+    Route::get('/dashboard/get', [DashboardController::class, 'getDashboardData'])->name('dashboard.get');
+
+
 
 
 });
