@@ -20,7 +20,7 @@ class DashboardController extends Controller
     {
         $oneMonthAgo = Carbon::now()->subMonth();
 
-        $vendorCount = Vendor::count();
+        $vendorCount = Vendor::where('created_at', '>=', $oneMonthAgo)->count();
         
         $successfulTransactions = DB::table('auditlog')
         ->where('status', '=', 'Successful')

@@ -108,12 +108,13 @@ export default {
             <!--Third Row-->
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div class="border-2 border-gray-300 rounded-lg dark:border-gray-600 h-32 md:h-72 bg-white">
-                  <BarChart
+                  <!-- <BarChart
                   :successPOCount="successPOCount"
                   :failedPOCount="failedPOCount"
                   :successInvoiceCount="successInvoiceCount"
                   :failedInvoiceCount="failedInvoiceCount"
-                  />               
+                  />                -->
+                  <BarChart/>
                   </div>
                 <div class="border-2 border-gray-300 rounded-lg dark:border-gray-600 h-32 md:h-72 bg-white">
                   <span style="margin-left: 12px;">Total Number of Vendor Transactions: {{ totalTransactions }} </span>
