@@ -37,9 +37,37 @@ class DashboardController extends Controller
         ->where('created_at', '>=', $oneMonthAgo)
         ->count();
 
+        $successPOCount = DB::table('auditlog')
+        ->where('transactionType', '=', 'Purchase Order')
+        ->where('status','=','Successful')
+        ->where('created_at', '>=', $oneMonthAgo)
+        ->count();
+
+        $failedPOCount = DB::table('auditlog')
+        ->where('transactionType', '=', 'Purchase Order')
+        ->where('status','=','Failed')
+        ->where('created_at', '>=', $oneMonthAgo)
+        ->count();  
+        
+        $successInvoiceCount = DB::table('auditlog')
+        ->where('transactionType', '=', 'Invoice')
+        ->where('status','=','Successful')
+        ->where('created_at', '>=', $oneMonthAgo)
+        ->count();
+
+        $failedInvoiceCount = DB::table('auditlog')
+        ->where('transactionType', '=', 'Invoice')
+        ->where('status','=','Failed')
+        ->where('created_at', '>=', $oneMonthAgo)
+        ->count();
+
         return response()->json(['vendorCount' => $vendorCount,
         'successfulTransactions'=>$successfulTransactions,
         'purchaseOrderCount'=>$purchaseOrderCount,
-        'invoiceCount'=>$invoiceCount]);
+        'invoiceCount'=>$invoiceCount,
+        'successPOCount'=>$successPOCount,
+        'failedPOCount'=>$failedPOCount,
+        'successInvoiceCount'=>$successInvoiceCount,
+        'failedInvoiceCount'=>$failedInvoiceCount]);
     }
 }
