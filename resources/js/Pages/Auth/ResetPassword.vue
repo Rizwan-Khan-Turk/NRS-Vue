@@ -31,7 +31,8 @@ const submit = () => {
 
     <AuthenticationCard>
         <template #logo>
-            <AuthenticationCardLogo />
+            <!-- <AuthenticationCardLogo /> -->
+            <img src="/img/Picture2.jpg" class="mr-3" alt="Flowbite Logo" />
         </template>
 
         <form @submit.prevent="submit">
