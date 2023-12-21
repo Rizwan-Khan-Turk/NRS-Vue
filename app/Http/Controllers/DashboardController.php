@@ -61,6 +61,15 @@ class DashboardController extends Controller
         ->where('created_at', '>=', $oneMonthAgo)
         ->count();
 
+        $failedTransactions = DB::table('auditlog')
+        ->where('status', '=', 'Failed')
+        ->where('created_at', '>=', $oneMonthAgo)
+        ->count();
+
+        $totalTransactions = DB::table('auditlog')
+        ->where('created_at', '>=', $oneMonthAgo)
+        ->count();
+
         return response()->json(['vendorCount' => $vendorCount,
         'successfulTransactions'=>$successfulTransactions,
         'purchaseOrderCount'=>$purchaseOrderCount,
@@ -68,6 +77,8 @@ class DashboardController extends Controller
         'successPOCount'=>$successPOCount,
         'failedPOCount'=>$failedPOCount,
         'successInvoiceCount'=>$successInvoiceCount,
-        'failedInvoiceCount'=>$failedInvoiceCount]);
+        'failedInvoiceCount'=>$failedInvoiceCount,
+        'failedTransactions'=>$failedTransactions,
+        'totalTransactions'=>$totalTransactions]);
     }
 }
