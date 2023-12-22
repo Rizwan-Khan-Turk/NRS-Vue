@@ -5,6 +5,7 @@ import Banner from '@/Components/Banner.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import { UsersIcon, Squares2X2Icon, BoltIcon, CalendarDaysIcon, BeakerIcon, BackwardIcon, CalendarIcon,PlusIcon,UserGroupIcon } from '@heroicons/vue/24/outline'
+import { useToast } from "vue-toastification"
 
 import { initFlowbite } from 'flowbite'
 import axios from 'axios';
@@ -14,6 +15,8 @@ const showDropdown = ref(false); // Add this line
 
 
 
+
+const toast = useToast();
 
 onMounted(async () => {
 	initFlowbite();
@@ -28,6 +31,22 @@ onMounted(async () => {
 })
 const toggleDropdown = () => {
   showDropdown.value = !showDropdown.value;
+};
+const markAllAsRead = async () => {
+  try {
+    await axios.post(route('notifications.markAllAsRead'));
+ 
+	const response = await axios.get('/notification/get');
+    notificationCount.value = response.data.notificationCount;
+    notifications.value = response.data.notifications;
+
+	toast.success("All Notifications marked as Read");
+
+  } catch (error) {
+    console.error('Error marking all notifications as read', error);
+	toast.error("Error marking all notifications as read");
+
+  }
 };
 
 defineProps({
@@ -88,16 +107,28 @@ const logout = () => {
 						<!-- Dropdown menu -->
 						<div class="hidden z-50 my-4 w-100 max-h-96 overflow-y-auto text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
 							id="notificationdropdown">
-						<ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
-							<li v-for="notification in notifications" :key="notification.id">
-								<Link :href="route('notifications.markAsRead', { id: notification.id, auditlogid: notification.auditlogid })">
-									<a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">
-									<i class="fas fa-bell fa-sm fa-fw mr-2 text-gray-400"></i>
-									<span :class="{ 'font-bold': notification.read === 0 }">{{ notification.message }}</span>
-									</a>
-								</Link>
-							</li>
-						</ul>
+							<div class="flex justify-end mt-2 pr-4">
+							<button
+								type="button"
+								class="bg-blue-500 text-white py-2 px-4 rounded-md mb-2"
+								:class="{ 'opacity-50 cursor-not-allowed': notificationCount === 0 }"
+								:disabled="notificationCount === 0"
+								@click="markAllAsRead"
+							>
+								Mark All as Read
+							</button>
+							</div>
+							<!-- <div class="dropdown-divider"></div> -->
+							<ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
+								<li v-for="notification in notifications" :key="notification.id">
+									<Link :href="route('notifications.markAsRead', { id: notification.id, auditlogid: notification.auditlogid })">
+										<a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">
+										<i class="fas fa-bell fa-sm fa-fw mr-2 text-gray-400"></i>
+										<span :class="{ 'font-bold': notification.read === 0 }">{{ notification.message }}</span>
+										</a>
+									</Link>
+								</li>
+							</ul>			
 						</div>
 
 						<button type="button"
@@ -212,3 +243,14 @@ const logout = () => {
 
 	</div>
 </template>
+<style>
+.dropdown-divider {
+  height: 0;
+  margin: 0.5rem 0;
+  overflow: hidden;
+  border-top: 1px solid #eaecf4;
+}
+.dropdown-menu.show {
+  display: block;
+}
+</style>
