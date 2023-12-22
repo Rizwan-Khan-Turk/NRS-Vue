@@ -79,6 +79,11 @@ Route::middleware([
     // Dashboard
     Route::get('/dashboard/get', [DashboardController::class, 'getDashboardData'])->name('dashboard.get');
 
+    // Notification
+    Route::get('/notification/get', [NotificationController::class, 'getNotificationData'])->name('notification.get');
+    Route::get('/notifications/mark-as-read/{id}/{auditlogid}', [NotificationController::class,'markAsRead'])->name('notifications.markAsRead');
+    Route::post('/notifications/mark-all-as-read', [NotificationController::class,'markAllAsRead'])->name('notifications.markAllAsRead');
+
 
 
 

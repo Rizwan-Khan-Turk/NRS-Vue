@@ -7,6 +7,8 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import Toast, { POSITION } from "vue-toastification";
 import "vue-toastification/dist/index.css";
+import '@fortawesome/fontawesome-free/css/all.css';
+
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 

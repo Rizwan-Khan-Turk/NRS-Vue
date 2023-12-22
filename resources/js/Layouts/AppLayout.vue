@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from 'vue';
+import {ref, onMounted } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import Banner from '@/Components/Banner.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -7,10 +7,28 @@ import NavLink from '@/Components/NavLink.vue';
 import { UsersIcon, Squares2X2Icon, BoltIcon, CalendarDaysIcon, BeakerIcon, BackwardIcon, CalendarIcon,PlusIcon,UserGroupIcon } from '@heroicons/vue/24/outline'
 
 import { initFlowbite } from 'flowbite'
+import axios from 'axios';
+const notificationCount = ref(0);
+const notifications = ref(0);
+const showDropdown = ref(false); // Add this line
 
-onMounted(() => {
+
+
+
+onMounted(async () => {
 	initFlowbite();
+	try {
+      const response = await axios.get('/notification/get');
+      notificationCount.value = response.data.notificationCount;
+	  notifications.value = response.data.notifications;
+  
+    } catch (error) {
+      console.error('Error fetching notifications data', error);
+    }
 })
+const toggleDropdown = () => {
+  showDropdown.value = !showDropdown.value;
+};
 
 defineProps({
 	title: String,
@@ -56,8 +74,32 @@ const logout = () => {
 								class="self-center text-2xl text-indigo-900 font-semibold whitespace-nowrap dark:text-white">NRS EDI Integration</span>
 						</a>
 					</div>
+					<!--start-->
 					<div class="flex items-center lg:order-2">
-						
+				
+						<button type="button"
+							class="flex mx-3 p-3 text-gray-100 bg-red-800 rounded-full md:mr-0 focus:ring-2 focus:ring-red-700 dark:focus:ring-gray-600 w-[40px] h-[40px] items-center justify-center"
+							id="notification-button" aria-expanded="false" data-dropdown-toggle="notificationdropdown"
+							@click="toggleDropdown">
+							<span class="sr-only">Open notification dropdown</span>
+							<i class="fas fa-bell fa-fw"></i>
+							<span v-if="notificationCount > 0" class="badge badge-danger badge-counter">{{ notificationCount }}</span>
+						</button>
+						<!-- Dropdown menu -->
+						<div class="hidden z-50 my-4 w-100 max-h-96 overflow-y-auto text-base list-none bg-white divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 rounded-xl"
+							id="notificationdropdown">
+						<ul class="py-1 text-gray-700 dark:text-gray-300" aria-labelledby="dropdown">
+							<li v-for="notification in notifications" :key="notification.id">
+								<Link :href="route('notifications.markAsRead', { id: notification.id, auditlogid: notification.auditlogid })">
+									<a class="block py-2 px-4 text-sm hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-400 dark:hover:text-white">
+									<i class="fas fa-bell fa-sm fa-fw mr-2 text-gray-400"></i>
+									<span :class="{ 'font-bold': notification.read === 0 }">{{ notification.message }}</span>
+									</a>
+								</Link>
+							</li>
+						</ul>
+						</div>
+
 						<button type="button"
 							class="flex mx-3 p-3 text-gray-100 bg-indigo-800 rounded-full md:mr-0 focus:ring-2 focus:ring-indigo-700 dark:focus:ring-gray-600 w-[40px] h-[40px] items-center justify-evenly"
 							id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
@@ -87,6 +129,7 @@ const logout = () => {
 							</ul>
 						</div>
 					</div>
+					<!--end-->
 				</div>
 			</nav>
 
