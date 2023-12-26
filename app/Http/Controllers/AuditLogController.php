@@ -29,7 +29,7 @@ class AuditLogController extends Controller
 {
     private $module_name, $add, $read, $update;
     protected $auditService;
-    
+
     public function __construct(AuditLogService $auditService)
     {
         //$this->module_name = config('constants.VENDOR.MODULE');
@@ -368,7 +368,17 @@ class AuditLogController extends Controller
                 $accountNumber = $record->vcode;
             }
             else {
-                throw new Exception("Vendor id not found in the system");
+                //throw new Exception("Vendor id not found in the system");
+                $message = "Vendor id not found in the system";
+                $auditlog_error = new AuditLog();
+                $auditlog_error->object = $jsonObjectData['jsonObjectData'];
+                $auditlog_error->vendor = $requestData['edi_vendor_id'];
+                $auditlog_error->po_number = $requestData['po_number'];
+                $auditlog_error->status = "Failed";
+                $auditlog_error->transactionType = "Purchase Order";
+                $auditlog_error->error_detail = $message;
+                $auditlog_error->save();
+                return response()->json(['alert' => 'Vendor id not found in the system'], 200);
             }
 
 
@@ -384,13 +394,25 @@ class AuditLogController extends Controller
 
 
 
-            $records = FileFormat::where('vendor', $vendorId)->first();
+            $records = FileFormat::where('vendor', $vendorId)
+                ->where('object', 'PO')
+                ->first();
             // if ($records) {
 
             if($records){
                 $fileFormat = $records->file_format;
             }else {
-                throw new Exception("File format not found");
+                //throw new Exception("File format not found");
+                $message = "File format not found against this vendor please check file_format_info table";
+                $auditlog_error = new AuditLog();
+                $auditlog_error->object = $jsonObjectData['jsonObjectData'];
+                $auditlog_error->vendor = $requestData['edi_vendor_id'];
+                $auditlog_error->po_number = $requestData['po_number'];
+                $auditlog_error->status = "Failed";
+                $auditlog_error->transactionType = "Purchase Order";
+                $auditlog_error->error_detail = $message;
+                $auditlog_error->save();
+                return response()->json(['alert' => 'File format not found against this vendor please check file_format_info table'], 200);
             }
             if ($fileFormat == 'FFF'){
                 generateFixedFile($requestData,$accountNumber,$vendorId);
