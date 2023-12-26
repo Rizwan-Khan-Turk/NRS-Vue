@@ -53,16 +53,25 @@ class AuditLogController extends Controller
 
             // Set Vendor Id from Vendor Code
             $vendorObject = Vendor::where('vcode', $vendorCode)->first();
+            if(!$vendorObject){
+                throw new Exception("NRS Vendor id not found in the system");
+            }
             $vendorfileformatid = $vendorObject->id;
 
 
             // Use the vendor id to get file format id
             $fileFormatInfo =FileFormat::where('vendor',$vendorfileformatid)->where('object', 'PO')->first();
+            if(!$fileFormatInfo){
+                throw new Exception("File Format Info Id does not exist against this vendor");
+            }
             $fileFormatInfoId = $fileFormatInfo->id;
 
             // Use the File Format id to get the mappings for the respective vendors
             $mappings = MappingInfo::where('format_info_id', $fileFormatInfoId)->get();
             //   print_r($mappings);
+            if(!$mappings){
+                throw new Exception("Mapping not found against this vendor in mapping_info table");
+            }
             if ($mappings->count() > 0) {
                 // print_r($mappings);
                 foreach ($mappings as $map) {
@@ -72,9 +81,6 @@ class AuditLogController extends Controller
                     $format[$Attribute] = $length;
                     // Perform any operations on the retrieved data.
                 }
-            }
-            else{
-                throw new Exception("mapping not found");
             }
 
             //  print_r($mappings);
@@ -231,7 +237,8 @@ class AuditLogController extends Controller
 
             // Login to the SFTP server
             if (!$sftp->login($ftpUsername, $ftpPassword)) {
-                return "SFTP login failed";
+                throw new Exception("SFTP login failed, Kindly Check Credentials against vendor for SFTP");
+                //return "SFTP login failed";
             }
 
             // Specify the remote directory on the SFTP server where the file will be uploaded
@@ -243,7 +250,8 @@ class AuditLogController extends Controller
 
             // Upload the file to the SFTP server
             if (!$sftp->put($remoteDirectory . $remoteFilename, $fileName, SFTP::SOURCE_LOCAL_FILE)) {
-                return "File upload to SFTP failed";
+                //return "File upload to SFTP failed";
+                throw new Exception("File upload to SFTP failed");
             } else {
                 return "File uploaded to SFTP successfully";
             }
@@ -419,10 +427,22 @@ class AuditLogController extends Controller
             }else if ($fileFormat == 'CSV') {
                 generateCsvFile($requestData,$accountNumber);
             }
-        } catch (\Throwable $th) {
+        } catch (Exception $e) {
+            // For Catching Exceptions from generateFixedFile and generateCsvFile Methods
             $status = 'Failed';
             $error = true;
-            $message = $th->getMessage();
+            $message = $e->getMessage();
+            $auditlog_error = new AuditLog();
+            $auditlog_error->object = $jsonObjectData['jsonObjectData'];
+            $auditlog_error->vendor = $requestData['edi_vendor_id'];
+            $auditlog_error->po_number = $requestData['po_number'];
+            $auditlog_error->status = $status;
+            $auditlog_error->transactionType = "Purchase Order";
+            $auditlog_error->error_detail = $message;
+            $auditlog_error->save();
+            return response()->json(['alert' => $message], 200);
+
+
             // $auditlog = new AuditLog();
             // $auditlog->object = $jsonObjectData['jsonObjectData'];
             // $auditlog->vendor = $requestData['edi_vendor_id'];
