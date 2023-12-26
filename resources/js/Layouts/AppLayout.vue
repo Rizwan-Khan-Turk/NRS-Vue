@@ -97,7 +97,7 @@ const logout = () => {
 					<div class="flex items-center lg:order-2">
 				
 						<button type="button"
-							class="flex mx-3 p-3 text-gray-100 bg-red-800 rounded-full md:mr-0 focus:ring-2 focus:ring-red-700 dark:focus:ring-gray-600 w-[40px] h-[40px] items-center justify-center"
+							class="flex mx-3 p-3 text-gray-100 bg-red-800 rounded-full md:mr-0 focus:ring-2 focus:ring-red-700 dark:focus:ring-gray-600 w-[70px] h-[40px] items-center justify-center"
 							id="notification-button" aria-expanded="false" data-dropdown-toggle="notificationdropdown"
 							@click="toggleDropdown">
 							<span class="sr-only">Open notification dropdown</span>
