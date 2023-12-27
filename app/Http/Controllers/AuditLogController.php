@@ -373,7 +373,14 @@ class AuditLogController extends Controller
             $record = Vendor::find($vendorId);
             //$record = Vendor::where('vcode', $vendorId);
             if ($record) {
+                if (isset($requestData['customer_number'])) {
+                    // customer number exists and we can use it for filename generation
+                    $customer_number = $requestData['customer_number'];
+                    $accountNumber = $customer_number;
+                }
+                else{
                 $accountNumber = $record->vcode;
+                }
             }
             else {
                 //throw new Exception("Vendor id not found in the system");
